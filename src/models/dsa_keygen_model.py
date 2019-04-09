@@ -45,6 +45,7 @@ class DSAKeygenModel(QObject, DSAKeygen):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._thread = KeygenThread(parent)
+        self._keygen = DSAKeygen()
         self._state = DSAKeygenModel.GENERATING_FINISHED
         self._thread.started.connect(
             lambda: self.setState(DSAKeygenModel.GENERATING_STARTED))
@@ -63,85 +64,68 @@ class DSAKeygenModel(QObject, DSAKeygen):
 
     @pyqtProperty(list, notify=keysValueChanged)
     def keys(self) -> list:
-        return self.keys_container.keys
+        return self._keygen.keys_container.keys
 
     @keys.setter
     def keys(self, keys: list):
-        self.keys_container.keys = keys
+        self._keygen.keys_container.keys = keys
         self.keysValueChanged.emit()
 
     @pyqtProperty(list, notify=keysValueChanged)
     def public_key(self) -> list:
-        return self.keys_container.public_key
+        return self._keygen.keys_container.public_key
 
     @pyqtProperty(int, notify=keysValueChanged)
     def private_key(self) -> int:
-        return self.keys_container.private_key
+        return self._keygen.keys_container.private_key
 
     @pyqtProperty(str, notify=keysValueChanged)
     def p(self):
-        return hex(self.keys_container.p)
+        return hex(self._keygen.keys_container.p)
 
     @pyqtProperty(str, notify=keysValueChanged)
     def q(self):
-        return hex(self.keys_container.q)
+        return hex(self._keygen.keys_container.q)
 
     @pyqtProperty(str, notify=keysValueChanged)
     def g(self):
-        return hex(self.keys_container.g)
+        return hex(self._keygen.keys_container.g)
 
     @pyqtProperty(str, notify=keysValueChanged)
     def y(self):
-        return hex(self.keys_container.y)
+        return hex(self._keygen.keys_container.y)
 
     @pyqtProperty(str, notify=keysValueChanged)
     def x(self):
-        return hex(self.keys_container.x)
+        return hex(self._keygen.keys_container.x)
 
-    def get_q_length(self) -> int:
-        return self._q_length
+    @pyqtProperty(int, notify=qLengthChanged)
+    def q_length(self) -> int:
+        return self._keygen.q_length
 
-    def set_q_length(self, q_length: int):
-        self._q_length = q_length
+    @q_length.setter
+    def q_length(self, q_length: int):
+        self._keygen.q_length = q_length
         self.qLengthChanged.emit()
 
-    q_length = pyqtProperty(int, fget=get_q_length, fset=set_q_length,
-                            notify=pLengthChanged)
+    @pyqtProperty(int, notify=pLengthChanged)
+    def p_length(self) -> int:
+        return self._keygen.p_length
 
-    def _get_p_length(self) -> int:
-        return self._p_length
-
-    def set_p_length(self, value: int):
-        self._p_length = value
+    @p_length.setter
+    def p_length(self, value: int):
+        self._keygen.p_length = value
         self.pLengthChanged.emit()
-
-    p_length = pyqtProperty(int, fget=_get_p_length, fset=set_p_length,
-                            notify=pLengthChanged)
 
     @pyqtSlot()
     def async_generate_new_keys(self):
-        self._thread.keygen = self
-        self._thread.method_name = 'generate_new_keys_with_signal_emit'
+        self._thread.keygen = self._keygen
+        self._thread.method_name = 'generate_new_keys'
         self._thread.start()
-
-    @pyqtSlot()
-    def generate_new_keys_with_signal_emit(self):
-        try:
-            self.generate_new_keys()
-            self.keysValueChanged.emit()
-        except Exception as e:
-            print('Error:', e)
 
     @pyqtSlot()
     def async_generate_new_x_y(self):
-        self._thread.keygen = self
-        self._thread.method_name = 'generate_new_x_y_with_signal_emit'
+        self._thread.keygen = self._keygen
+        self._thread.method_name = 'generate_new_x_y'
         self._thread.start()
 
-    @pyqtSlot()
-    def generate_new_x_y_with_signal_emit(self):
-        try:
-            self.generate_new_x_y()
-            self.keysValueChanged.emit()
-        except Exception as e:
-            print('Error:', e)

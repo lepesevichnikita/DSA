@@ -23,11 +23,11 @@ class DSASignerModel(QObject):
 
     @pyqtProperty(str, notify=signChanged)
     def r(self) -> str:
-        return hex(self._signer.sign.r if self._signer.has_sign else 0)
+        return hex(self._signer.sign.r) if self._signer.has_sign else ""
 
     @pyqtProperty(str, notify=signChanged)
     def s(self) -> str:
-        return hex(self._signer.sign.r if self._signer.has_sign else 0)
+        return hex(self._signer.sign.r) if self._signer.has_sign else ""
 
     @keys.setter
     def keys(self, keys: list):

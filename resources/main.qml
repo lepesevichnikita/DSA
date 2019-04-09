@@ -4,7 +4,8 @@ import QtQuick.Controls 2.5
 import QtQml.Models 2.1
 
 ApplicationWindow {
-    title: "DSABase"
+    property int margins: 20
+    title: swipeView.currentItem.title
     visible: true
 
     minimumWidth: 1024
@@ -14,8 +15,10 @@ ApplicationWindow {
         id: objectModel
 
         Keygen {}
+
         FileSign {}
-        Item{}
+
+        SignCheck {}
     }
 
     footer: TabBar {
@@ -35,7 +38,7 @@ ApplicationWindow {
     SwipeView {
         id: swipeView
         anchors.fill: parent
-        anchors.margins: 20
+        anchors.margins: margins
         currentIndex: tabBar.currentIndex
 
         Repeater {

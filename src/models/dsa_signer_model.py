@@ -1,6 +1,6 @@
-from src.dsa import DSASigner
-
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
+
+from src.dsa import DSASigner
 
 
 class DSASignerModel(QObject):
@@ -16,6 +16,8 @@ class DSASignerModel(QObject):
         self._file_path = ""
         self._sign_name = ""
         self.filePathChanged.connect(self.calculate_hash_of_file)
+        self.filePathChanged.connect(self.hashOfFileChanged)
+        self.filePathChanged.connect(self.sign_file)
 
     @pyqtProperty(list, notify=keysChanged)
     def keys(self) -> list:
@@ -23,11 +25,11 @@ class DSASignerModel(QObject):
 
     @pyqtProperty(str, notify=signChanged)
     def r(self) -> str:
-        return hex(self._signer.sign.r if self._signer.has_sign else 0)
+        return hex(self._signer.sign.r) if self._signer.has_sign else ""
 
     @pyqtProperty(str, notify=signChanged)
     def s(self) -> str:
-        return hex(self._signer.sign.r if self._signer.has_sign else 0)
+        return hex(self._signer.sign.s) if self._signer.has_sign else ""
 
     @keys.setter
     def keys(self, keys: list):
@@ -42,7 +44,6 @@ class DSASignerModel(QObject):
     def file_path(self, file_path: str):
         self._signer.file_path = file_path
         self.filePathChanged.emit()
-        self.hashOfFileChanged.emit()
 
     @pyqtProperty(str, notify=signNameChanged)
     def sign_name(self) -> str:

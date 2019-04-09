@@ -29,27 +29,28 @@ ColumnLayout {
         }
     }
 
+    state: keygen.state
+    onStateChanged: print(state)
+
+    states: [
+        State {
+            name: 'GENERATING_STARTED'
+            PropertyChanges {
+                target: key_lengths
+                enabled: false
+            }
+        },
+        State {
+            name: 'GENERATING_FINISHED'
+            PropertyChanges {
+                target: key_lengths
+                enabled: true
+            }
+        }
+    ]
+
     ColumnLayout {
         id: key_lengths
-        state: keygen.state
-        onStateChanged: print(state)
-
-        states: [
-            State {
-                name: 'GENERATING_STARTED'
-                PropertyChanges {
-                    target: key_lengths
-                    enabled: false
-                }
-            },
-            State {
-                name: 'GENERATING_FINISHED'
-                PropertyChanges {
-                    target: key_lengths
-                    enabled: true
-                }
-            }
-        ]
 
         Button {
             Layout.fillWidth: true

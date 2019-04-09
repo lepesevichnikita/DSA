@@ -15,7 +15,7 @@ ApplicationWindow {
         id: objectModel
 
         Item {
-            Task1 {}
+            Keygen {}
         }
     }
 

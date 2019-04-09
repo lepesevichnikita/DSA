@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="main.qml">resources/main.qml</file>
-        <file alias="Task1.qml">resources/Task1.qml</file>
+        <file alias="Keygen.qml">resources/Keygen.qml</file>
     </qresource>
 </RCC>

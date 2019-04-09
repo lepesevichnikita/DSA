@@ -7,7 +7,8 @@ from PyQt5.QtCore import QUrl, qInstallMessageHandler
 import sys
 import resources_rc
 
-from src import DSAKeygenModel, DSAKeysWriterModel, DSAKeysReaderModel
+from src.models import DSAKeygenModel, DSAKeysWriterModel, DSAKeysReaderModel, \
+    DSASignerModel
 
 MAIN_QML = QUrl("qrc:///main.qml")
 MODULES_IMPORT_PATH = "qrc:///modules"
@@ -24,6 +25,7 @@ def main():
     qmlRegisterType(DSAKeygenModel, "dsa", 1, 0, "DSAKeygen")
     qmlRegisterType(DSAKeysWriterModel, "dsa", 1, 0, "DSAKeysWriter")
     qmlRegisterType(DSAKeysReaderModel, "dsa", 1, 0, "DSAKeysReader")
+    qmlRegisterType(DSASignerModel, "dsa", 1, 0, "DSASigner")
 
     engine = QQmlApplicationEngine()
     engine.addImportPath(MODULES_IMPORT_PATH)

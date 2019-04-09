@@ -1,30 +1,22 @@
-from src.dsa_keys_container import DSAKeysContainer
+from .dsa_base import DSABase
+from .dsa_keys_container import DSAKeysContainer
 
 
-class DSAKeysReader:
+class DSAKeysReader(DSABase):
     def __init__(self, keys_container: DSAKeysContainer = DSAKeysContainer(),
                  public_key_path: str = None,
                  private_key_path: str = None):
-        super().__init__()
-        self._keys_container = keys_container
+        super().__init__(keys_container)
         if public_key_path is not None:
             self._public_key_path = public_key_path
         if private_key_path is not None:
             self._private_key_path = private_key_path
 
-    @property
-    def keys_container(self) -> DSAKeysContainer:
-        return self._keys_container
-
-    @keys_container.setter
-    def keys_container(self, keys_container: DSAKeysContainer):
-        self._keys_container = keys_container
-
     def _get_keys(self) -> list:
-        return self._keys_container.keys
+        return self.keys_container.keys
 
     def _set_keys(self, keys: list):
-        self._keys_container.keys = keys
+        self.keys_container.keys = keys
 
     keys = property(_get_keys, _set_keys)
 

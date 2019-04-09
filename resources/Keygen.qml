@@ -1,5 +1,5 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.7
+import QtQuick 2.12
+import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
 import QtQuick.Dialogs 1.3
 
@@ -7,7 +7,6 @@ import dsa 1.0
 
 ColumnLayout {
     id: root
-    anchors.fill: parent
 
     DSAKeygen {
         id: keygen
@@ -103,6 +102,7 @@ ColumnLayout {
         text: qsTr("Открыть публичный ключ")
         onClicked: openPublicKeyDialog.open()
     }
+
     RowLayout {
         Label {
             text: qsTr("P")

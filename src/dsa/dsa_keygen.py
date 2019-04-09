@@ -1,29 +1,27 @@
 from sympy import randprime, isprime
-from random import randint, choice
-from itertools import islice, count
-from src.dsa_keys_container import DSAKeysContainer
+from random import randint
+from itertools import count
+
+from src.dsa.dsa_base import DSABase
+from src.dsa.dsa_keys_container import DSAKeysContainer
 
 
-class DSAKeygen:
+class DSAKeygen(DSABase):
     DEFAULT_Q_LENGTH = 256
     DEFAULT_P_LENGTH = 3072
 
     def __init__(self, q_length=None, p_length=None):
+        super().__init__(DSAKeysContainer())
         self._q_length = q_length if q_length else self.DEFAULT_Q_LENGTH
         self._p_length = p_length if p_length else self.DEFAULT_P_LENGTH
-        self._keys_container = DSAKeysContainer()
 
     def generate_new_keys(self) -> list:
-        self._keys_container.q = self._gen_Q()
-        self._keys_container.p = self._gen_P()
-        self._keys_container.g = self._gen_G()
-        self._keys_container.x = self._gen_X()
-        self._keys_container.y = self._gen_Y()
+        self.keys_container.q = self._gen_Q()
+        self.keys_container.p = self._gen_P()
+        self.keys_container.g = self._gen_G()
+        self.keys_container.x = self._gen_X()
+        self.keys_container.y = self._gen_Y()
         return self.keys
-
-    @property
-    def keys_container(self) -> DSAKeysContainer:
-        return self._keys_container
 
     @property
     def _q_range_start(self) -> int:
@@ -45,21 +43,21 @@ class DSAKeygen:
         end = DSAKeygen.binary_length_end(self._p_length)
         return end
 
-    def get_q_length(self) -> int:
+    def _get_q_length(self) -> int:
         return self._q_length
 
-    def set_q_length(self, value: int):
+    def _set_q_length(self, value: int):
         self._q_length = value
 
-    q_length = property(get_q_length, set_q_length)
+    q_length = property(_get_q_length, _set_q_length)
 
-    def get_p_length(self):
+    def _get_p_length(self):
         return self._p_length
 
-    def set_p_length(self, value):
+    def _set_p_length(self, value):
         self._p_length = value
 
-    p_length = property(get_p_length, set_p_length)
+    p_length = property(_get_p_length, _set_p_length)
 
     def _gen_Q(self) -> int:
         q = randprime(self._q_range_start, self._q_range_end)
@@ -79,7 +77,7 @@ class DSAKeygen:
         return p
 
     def _gen_G(self):
-        p, q, *_ = self._keys_container.public_key
+        p, q, *_ = self.keys_container.public_key
         h = randint(2, p - 1)
         g = pow(h, (p - 1) // q, p)
         return g
@@ -88,8 +86,8 @@ class DSAKeygen:
         return randint(0, self._keys_container.q)
 
     def _gen_Y(self):
-        p, _, g, _ = self._keys_container.public_key
-        x = self._keys_container.private_key
+        p, _, g, _ = self.keys_container.public_key
+        x = self.keys_container.private_key
         y = pow(g, x, p)
         return y
 
@@ -104,5 +102,5 @@ class DSAKeygen:
         return end
 
     def generate_new_x_y(self):
-        self._keys_container.x = self._gen_X()
-        self._keys_container.y = self._gen_Y()
+        self.keys_container.x = self._gen_X()
+        self.keys_container.y = self._gen_Y()

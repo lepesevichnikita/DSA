@@ -111,8 +111,10 @@ class DSAKeysContainer:
     def validate_public_key(self):
         DSAKeysContainer._validate_public_key(self._public_key)
 
+    @property
     def has_public_key(self) -> bool:
         return self.public_key is not None and len(self.public_key) >= 3
 
+    @property
     def has_private_key(self) -> bool:
         return self.private_key is not None and self.private_key >= 3

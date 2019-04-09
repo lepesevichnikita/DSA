@@ -1,4 +1,4 @@
-from .dsa_base import DSABase
+from src.dsa.dsa_base import DSABase
 
 
 class DSABaseSignChecker(DSABase):
@@ -17,10 +17,3 @@ class DSABaseSignChecker(DSABase):
 
     def is_sign_corrupted(self) -> bool:
         self.validate_public_key_and_hash()
-        p, q, g, y = self.public_key
-        r, s = self.sign
-        w = pow(s, -1, q)
-        u1 = (self.hashed_data * w) % p
-        u2 = (r * w) % p
-        v = (pow(g, u1, p) * pow(y, u2, p) % p) % q
-        return v == r

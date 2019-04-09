@@ -1,6 +1,5 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.3
 
 import QtQml.Models 2.1
 
@@ -14,14 +13,15 @@ ApplicationWindow {
     ObjectModel {
         id: objectModel
 
-        Item {
-            Keygen {}
-        }
+        Keygen {}
+        FileSign {}
+        Item{}
     }
 
     footer: TabBar {
-        id: bar
+        id: tabBar
         width: parent.width
+        currentIndex: swipeView.currentIndex
 
         Repeater {
             model: ["Сгенерировать ключи", "Подписать файл", "Проверить подпись"]
@@ -32,10 +32,11 @@ ApplicationWindow {
 
     }
 
-    StackLayout {
+    SwipeView {
+        id: swipeView
         anchors.fill: parent
         anchors.margins: 20
-        currentIndex: bar.currentIndex
+        currentIndex: tabBar.currentIndex
 
         Repeater {
             model: objectModel

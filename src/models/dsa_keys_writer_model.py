@@ -1,7 +1,6 @@
-from .dsa_keys_writer import DSAKeysWriter
-from .dsa_keys_container import DSAKeysContainer
+from src.dsa import DSAKeysWriter
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSlot, pyqtSignal, QThread
+from PyQt5.QtCore import QObject, pyqtProperty, pyqtSlot, pyqtSignal
 
 
 class DSAKeysWriterModel(QObject):
@@ -25,12 +24,12 @@ class DSAKeysWriterModel(QObject):
 
     @pyqtProperty(list, notify=keysChanged)
     def keys(self) -> list:
-        return self.keys_container.keys
+        return self._keys_writer.keys_container.keys
 
     @keys.setter
     def keys(self, keys: list):
         try:
-            self.keys_container.keys = keys
+            self._keys_writer.keys_container.keys = keys
         except Exception as e:
             print(e)
         finally:

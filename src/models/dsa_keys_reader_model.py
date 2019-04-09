@@ -1,7 +1,6 @@
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
 
-from src.dsa_keys_reader import DSAKeysReader
-from src.dsa_keys_container import DSAKeysContainer
+from src.dsa import DSAKeysReader
 
 
 class DSAKeysReaderModel(QObject):
@@ -14,6 +13,32 @@ class DSAKeysReaderModel(QObject):
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self._keys_reader = DSAKeysReader()
+        self.publicKeyChanged.connect(self.keysChanged)
+        self.privateKeyChanged.connect(self.keysChanged)
+
+    @pyqtProperty(list, notify=publicKeyChanged)
+    def public_key(self) -> list:
+        return self._keys_reader.keys_container.public_key
+
+    @pyqtProperty(str, notify=publicKeyChanged)
+    def q(self) -> str:
+        return hex(self._keys_reader.keys_container.q)
+
+    @pyqtProperty(str, notify=publicKeyChanged)
+    def g(self) -> str:
+        return hex(self._keys_reader.keys_container.g)
+
+    @pyqtProperty(str, notify=publicKeyChanged)
+    def p(self) -> str:
+        return hex(self._keys_reader.keys_container.p)
+
+    @pyqtProperty(str, notify=publicKeyChanged)
+    def y(self) -> str:
+        return hex(self._keys_reader.keys_container.y)
+
+    @pyqtProperty(str, notify=privateKeyChanged)
+    def private_key(self) -> str:
+        return hex(self._keys_reader.keys_container.private_key)
 
     @pyqtProperty(list, notify=keysChanged)
     def keys(self) -> list:

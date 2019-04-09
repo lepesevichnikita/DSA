@@ -1,7 +1,5 @@
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot, QThread, \
-    Q_ENUMS
-from src.dsa_keygen import DSAKeygen
-from src.dsa_keys_container import DSAKeysContainer
+from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot, QThread
+from src.dsa import DSAKeygen
 
 
 class KeygenThread(QThread):
@@ -110,14 +108,14 @@ class DSAKeygenModel(QObject, DSAKeygen):
     q_length = pyqtProperty(int, fget=get_q_length, fset=set_q_length,
                             notify=pLengthChanged)
 
-    def get_p_length(self) -> int:
+    def _get_p_length(self) -> int:
         return self._p_length
 
     def set_p_length(self, value: int):
         self._p_length = value
         self.pLengthChanged.emit()
 
-    p_length = pyqtProperty(int, fget=get_p_length, fset=set_p_length,
+    p_length = pyqtProperty(int, fget=_get_p_length, fset=set_p_length,
                             notify=pLengthChanged)
 
     @pyqtSlot()

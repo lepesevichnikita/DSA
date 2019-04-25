@@ -54,4 +54,4 @@ class DSASigner(DSAHasher):
 
     @property
     def is_available_for_signing(self) -> bool:
-        return self.has_keys_container & self.has_hashed_data & self.has_hash_algorithm
+        return self.has_keys_container & self.keys_container.has_keys & self.has_hashed_data & self.has_hash_algorithm

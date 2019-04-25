@@ -11,7 +11,7 @@ class DSABase:
                                              'equal '
     PRIVATE_KEY_IS_NONE_MESSAGE = 'Private key should be passed'
 
-    def __init__(self, keys_container):
+    def __init__(self, keys_container:DSAKeysContainer):
         self._keys_container = keys_container
 
     def _get_keys_container(self) -> DSAKeysContainer:
@@ -25,4 +25,5 @@ class DSABase:
     @property
     def has_keys_container(self) -> bool:
         return self._keys_container is not None
+
 

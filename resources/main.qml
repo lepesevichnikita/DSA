@@ -17,16 +17,14 @@ ApplicationWindow {
 
     }
 
-    header: Rectangle {
+    header: RowLayout {
         id: headerBar
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: margins
-            Button {
-                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                text: qsTr("Назад")
-                onClicked: stackView.pop()
-            }
+        width: parent.width
+        Button {
+            Layout.margins: margins
+            Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+            text: qsTr("Назад")
+            onClicked: stackView.pop()
         }
         states: [
             State {
@@ -53,16 +51,19 @@ ApplicationWindow {
                     text: qsTr("Сгенерировать ключ")
                     onClicked: stackView.push(keygenPage)
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.fillWidth: true
                 }
                 Button {
                     text: qsTr("Подписать файл")
                     onClicked: stackView.push(fileSignPage)
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.fillWidth: true
                 }
                 Button {
                     text: qsTr("Проверить подпись")
                     onClicked: stackView.push(signCheckingPage)
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.fillWidth: true
                 }
             }
         }
@@ -70,18 +71,21 @@ ApplicationWindow {
         Component {
             id: keygenPage
             Keygen {
+                anchors.margins: margins
             }
         }
 
         Component {
             id: fileSignPage
             FileSign {
+                anchors.margins: margins
             }
         }
 
         Component {
             id: signCheckingPage
             SignCheck {
+                anchors.margins: margins
             }
         }
     }

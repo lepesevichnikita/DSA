@@ -118,3 +118,7 @@ class DSAKeysContainer:
     @property
     def has_private_key(self) -> bool:
         return self.private_key is not None and self.private_key >= 3
+
+    @property
+    def has_keys(self) -> bool:
+        return self.has_public_key & self.has_private_key

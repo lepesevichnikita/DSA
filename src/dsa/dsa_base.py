@@ -4,13 +4,12 @@ from src.dsa.dsa_keys_container import DSAKeysContainer
 class DSABase:
     PUBLIC_KEY_EXTENSION = '.dsa_pub'
     PRIVATE_KEY_EXTENSION = '.dsa'
-    SIGN_EXTESNION = '.dsa_sign'
+    SIGN_EXTENSION = '.dsa_sign'
 
     UNEQUAL_LENGTH_OF_HASH_AND_KEY_MESSAGE = 'Binary length of hash and ' \
                                              'Q-part of public key should be ' \
                                              'equal '
     PRIVATE_KEY_IS_NONE_MESSAGE = 'Private key should be passed'
-    DEFAULT_HASH_ALGORITHM = 'sha256'
 
     def __init__(self, keys_container):
         self._keys_container = keys_container

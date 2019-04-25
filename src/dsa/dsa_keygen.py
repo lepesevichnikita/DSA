@@ -1,8 +1,7 @@
 from itertools import count
-from math import log
 from random import randint
 
-from sympy import randprime, isprime
+from sympy import randprime, isprime, n_order
 
 from src.dsa.dsa_base import DSABase
 from src.dsa.dsa_keys_container import DSAKeysContainer
@@ -23,7 +22,7 @@ class DSAKeygen(DSABase):
         self.keys_container.g = self._gen_G()
         self.keys_container.x = self._gen_X()
         self.keys_container.y = self._gen_Y()
-        return self.keys
+        return self.keys_container.keys
 
     @property
     def _q_range_start(self) -> int:
@@ -63,7 +62,6 @@ class DSAKeygen(DSABase):
 
     def _gen_Q(self) -> int:
         q = randprime(self._q_range_start, self._q_range_end)
-        print(int(log(q, 2)) + 1)
         return q
 
     def _gen_P(self) -> int:
@@ -85,8 +83,9 @@ class DSAKeygen(DSABase):
         calculate_g = lambda p_, q_, h_: pow(h_, (p_ - 1) // q_, p_)
         h = randint(2, p - 2)
         g = calculate_g(p, q, h)
+
         while g == 1:
-            h = randint(2, p - 1)
+            h = randint(2, p - 2)
             g = calculate_g(p, q, h)
         return g
 
@@ -106,7 +105,7 @@ class DSAKeygen(DSABase):
 
     @staticmethod
     def binary_length_end(length: int) -> int:
-        end = 2 ** length
+        end = (2 ** length) - 1
         return end
 
     def generate_new_x_y(self):

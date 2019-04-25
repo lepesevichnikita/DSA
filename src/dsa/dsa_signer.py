@@ -15,7 +15,7 @@ class DSASigner(DSAHasher):
     @property
     def sign_filename(self) -> str:
         result = self._sign_name if len(self._sign_name) > 0 else self.filename
-        result += DSABase.SIGN_EXTESNION
+        result += DSABase.SIGN_EXTENSION
         return result
 
     @property

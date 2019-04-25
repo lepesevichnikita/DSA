@@ -44,8 +44,9 @@ class DSAHasher(DSABase):
             result = binary_length_of_q == self.hash_digest_size
         return result
 
-    def update_hash(self, data: bytearray):
+    def update_hash(self, data: bytearray) -> int:
         self._hash.update(data)
+        return self.hashed_data
 
     def reset_hash(self):
         self._hash = hashlib.new(self._hash_algorithm)

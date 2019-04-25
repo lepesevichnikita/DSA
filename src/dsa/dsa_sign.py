@@ -38,11 +38,14 @@ class DSASign:
     s = property(_get_s, _set_s)
 
     def is_correct(self, public_key: list, hashed_data: int) -> bool:
+        result = False
         p, q, g, y = public_key
-        w = mod_inverse(self._s, q)
-        u1 = (hashed_data * w) % q
-        u2 = (self._r * w) % q
-        v = (pow(g, u1, p) * pow(y, u2, p)) % q
+        if self._r in range(q) and self._s in range(q):
+            w = mod_inverse(self._s, q)
+            u1 = (hashed_data * w) % q
+            u2 = (self._r * w) % q
+            v = ((pow(g, u1, p) * pow(y, u2, p)) % p) % q
+            result = v == self._r
         return v == self._r
 
     def write_into_file(self, sign_path: str):
@@ -56,12 +59,12 @@ def sign_data(public_key: list, private_key: int,
               hash_algorithm: str) -> DSASign:
     p, q, g, y = public_key
     calc_r = lambda p_, q_, g_, k_: pow(g_, k_, p_) % q_
-    calc_s = lambda q_, x_, r_, h_, k_: (k_ * (h_ + x_ * r_)) % q_
-    k = randint(0, q)
+    calc_s = lambda q_, x_, r_, h_, k_mod_inverse_q_: (k_mod_inverse_q_ * ((h_ + x_ * r_) % q_)) % q
+    k = randint(0, q-1)
     r = calc_r(p, q, g, k)
-    k_mod_inverse = mod_inverse(k, q)
-    s = calc_s(q, private_key, r, hashed_data, k_mod_inverse)
-    return DSASign(s, r, hash_algorithm)
+    k_mod_inverse_q = mod_inverse(k, q)
+    s = calc_s(q, private_key, r, hashed_data, k_mod_inverse_q)
+    return DSASign(r, s, hash_algorithm)
 
 
 def read_sign_from_file(file_path: str) -> DSASign:

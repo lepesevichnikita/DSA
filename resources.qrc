@@ -3,6 +3,7 @@
         <file alias="main.qml">resources/main.qml</file>
         <file alias="Keygen.qml">resources/Keygen.qml</file>
         <file alias="FileSign.qml">resources/FileSign.qml</file>
+        <file alias="SignCheck.qml">resources/SignCheck.qml</file>
         <file alias="qtquickcontrols2.conf">resources/qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

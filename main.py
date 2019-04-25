@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
+import sys
+
+from PyQt5.QtCore import QUrl, qInstallMessageHandler
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
-from PyQt5.QtCore import QUrl, qInstallMessageHandler
 
-import sys
+# noinspection PyUnresolvedReferences
 import resources_rc
-
 from src.models import DSAKeygenModel, DSAKeysWriterModel, DSAKeysReaderModel, \
-    DSASignerModel
+    DSASignerModel, DSASignCheckerModel
 
 MAIN_QML = QUrl("qrc:///main.qml")
 MODULES_IMPORT_PATH = "qrc:///modules"
@@ -26,9 +27,9 @@ def main():
     qmlRegisterType(DSAKeysWriterModel, "dsa", 1, 0, "DSAKeysWriter")
     qmlRegisterType(DSAKeysReaderModel, "dsa", 1, 0, "DSAKeysReader")
     qmlRegisterType(DSASignerModel, "dsa", 1, 0, "DSASigner")
+    qmlRegisterType(DSASignCheckerModel, "dsa", 1, 0, "DSASignChecker")
 
     engine = QQmlApplicationEngine()
-    engine.addImportPath(MODULES_IMPORT_PATH)
     engine.load(MAIN_QML)
 
     sys.exit(app.exec())

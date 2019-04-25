@@ -7,17 +7,17 @@ import dsa 1.0
 
 Page {
     id: root
-    title: qsTr("Подписать файл")
+    title: qsTr("Проверить подпись")
 
     DSAKeysReader {
         id: keysReader
     }
 
-    DSASigner {
-        id: signer
+    DSASignChecker {
+        id: checker
         keys: keysReader.keys
+        onSignStatusChanged: print(is_sign_correct)
     }
-
 
     ColumnLayout {
         anchors.fill: parent
@@ -73,33 +73,6 @@ Page {
                 readOnly: true
                 selectByMouse: true
             }
-
-            FileDialog {
-                id: openPrivateKeyDialog
-                title: qsTr("Выберите закрытый ключ")
-                visible: false
-                selectFolder: false
-                selectMultiple: false
-                onAccepted: {
-                    var path = fileUrl.toString().replace("file://", "")
-                    keysReader.private_key_path = path
-                    keysReader.read_private_key()
-                }
-            }
-
-            RowLayout {
-                TextField {
-                    Layout.fillWidth: true
-                    text: keysReader.private_key
-                    placeholderText: qsTr("Закрытый ключ")
-                    readOnly: true
-                    selectByMouse: true
-                }
-                Button {
-                    text: qsTr("Открыть закрытый ключ")
-                    onClicked: openPrivateKeyDialog.open()
-                }
-            }
         }
 
         ColumnLayout {
@@ -112,13 +85,13 @@ Page {
                     selectMultiple: false
                     onAccepted: {
                         var path = fileUrl.toString().replace("file://", "")
-                        signer.file_path = path
+                        checker.file_path = path
                     }
                 }
 
                 TextField {
                     Layout.fillWidth: true
-                    text: signer.file_path
+                    text: checker.file_path
                     placeholderText: qsTr("Выбранный файл")
                     readOnly: true
                     selectByMouse: true
@@ -137,7 +110,7 @@ Page {
 
                 TextField {
                     Layout.fillWidth: true
-                    text: signer.hash_of_file
+                    text: checker.hash_of_file
                     readOnly: true
                     selectByMouse: true
                 }
@@ -145,21 +118,36 @@ Page {
         }
 
         ColumnLayout {
-            Label {
-                Layout.fillWidth: true
-                text: qsTr("Подпись")
-            }
+            RowLayout {
+                FileDialog {
+                    id: selectSignDialog
+                    title: qsTr("Выберите подпись")
+                    visible: false
+                    selectFolder: false
+                    selectMultiple: false
+                    onAccepted: {
+                        var path = fileUrl.toString().replace("file://", "")
+                        checker.sign_path = path
+                    }
+                }
 
+                TextField {
+                    Layout.fillWidth: true
+                    text: checker.sign_path
+                    placeholderText: qsTr("Выбранная подпись")
+                    readOnly: true
+                    selectByMouse: true
+                }
 
-            Button {
-                Layout.fillWidth: true
-                text: qsTr("Вычислить подпись")
-                onClicked: signer.sign_file()
+                Button {
+                    text: qsTr("Выбрать подпись")
+                    onClicked: selectSignDialog.open()
+                }
             }
 
             TextField {
                 Layout.fillWidth: true
-                text: signer.r
+                text: checker.r
                 placeholderText: qsTr("Первая часть подписи (R)")
                 readOnly: true
                 selectByMouse: true
@@ -167,29 +155,15 @@ Page {
 
             TextField {
                 Layout.fillWidth: true
-                text: signer.s
+                text: checker.s
                 placeholderText: qsTr("Вторая часть подписи (S)")
                 readOnly: true
                 selectByMouse: true
             }
-
-            RowLayout {
-                TextField {
-                    Layout.fillWidth: true
-                    text: signer.sign_name
-                    placeholderText: qsTr("Название подписи")
-                    selectByMouse: true
-                    onEditingFinished: {
-                        signer.sign_name = text
-                    }
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: qsTr("Сохранить подпись")
-                    onClicked: signer.write_sign()
-                }
-            }
+        }
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("Статус подписи: ") + qsTr(checker.is_sign_correct ? "валидна" : "невалидна")
         }
     }
 }

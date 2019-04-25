@@ -4,9 +4,10 @@ from .dsa_keys_container import DSAKeysContainer
 
 class DSAKeysWriter(DSABase):
 
-    def __init__(self, keys_container: DSAKeysContainer = DSAKeysContainer(),
+    def __init__(self,
                  directory_path: str = None,
-                 keys_name: str = None):
+                 keys_name: str = None,
+                 keys_container: DSAKeysContainer = DSAKeysContainer()):
         super().__init__(keys_container)
         self.directory_path = directory_path
         self._keys_name = keys_name
@@ -86,5 +87,4 @@ class DSAKeysWriter(DSABase):
 
     def _write_all_values_from_public_key(self):
         with open(self.public_key_path, "wt") as file:
-            file.write(" ".join(
-                [hex(value) for value in self.public_key]))
+            file.write(" ".join([hex(value) for value in self.public_key]))

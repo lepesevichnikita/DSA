@@ -1,4 +1,5 @@
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot, QThread
+
 from src.dsa import DSAKeygen
 
 
@@ -32,7 +33,7 @@ class KeygenThread(QThread):
             print(str(e))
 
 
-class DSAKeygenModel(QObject, DSAKeygen):
+class DSAKeygenModel(QObject):
     GENERATING_STARTED = 'GENERATING_STARTED'
     GENERATING_FINISHED = 'GENERATING_FINISHED'
 

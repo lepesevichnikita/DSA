@@ -1,6 +1,7 @@
-from sympy import randprime, isprime
-from random import randint
 from itertools import count
+from random import randint
+
+from sympy import randprime, isprime, n_order
 
 from src.dsa.dsa_base import DSABase
 from src.dsa.dsa_keys_container import DSAKeysContainer
@@ -10,10 +11,10 @@ class DSAKeygen(DSABase):
     DEFAULT_Q_LENGTH = 256
     DEFAULT_P_LENGTH = 3072
 
-    def __init__(self, q_length=None, p_length=None):
+    def __init__(self, q_length=DEFAULT_Q_LENGTH, p_length=DEFAULT_P_LENGTH):
         super().__init__(DSAKeysContainer())
-        self._q_length = q_length if q_length else self.DEFAULT_Q_LENGTH
-        self._p_length = p_length if p_length else self.DEFAULT_P_LENGTH
+        self._q_length = q_length
+        self._p_length = p_length
 
     def generate_new_keys(self) -> list:
         self.keys_container.q = self._gen_Q()
@@ -21,7 +22,7 @@ class DSAKeygen(DSABase):
         self.keys_container.g = self._gen_G()
         self.keys_container.x = self._gen_X()
         self.keys_container.y = self._gen_Y()
-        return self.keys
+        return self.keys_container.keys
 
     @property
     def _q_range_start(self) -> int:
@@ -34,12 +35,12 @@ class DSAKeygen(DSABase):
         return end
 
     @property
-    def _p_range_start(self):
+    def _p_range_start(self) -> int:
         start = DSAKeygen.binary_length_start(self._p_length)
         return start
 
     @property
-    def _p_range_end(self):
+    def _p_range_end(self) -> int:
         end = DSAKeygen.binary_length_end(self._p_length)
         return end
 
@@ -65,8 +66,9 @@ class DSAKeygen(DSABase):
 
     def _gen_P(self) -> int:
         q = self._keys_container.q
-        round = q - self._p_range_start % q
-        p_range_start = self._p_range_start if round == 0 else self._p_range_start + round
+        round_to_next_divider = q - self._p_range_start % q
+        p_range_start = self._p_range_start if round_to_next_divider == 0 \
+            else self._p_range_start + round_to_next_divider
         p = 0
         for x in count(p_range_start, q):
             if x >= self._p_range_end:
@@ -78,12 +80,17 @@ class DSAKeygen(DSABase):
 
     def _gen_G(self):
         p, q, *_ = self.keys_container.public_key
-        h = randint(2, p - 1)
-        g = pow(h, (p - 1) // q, p)
+        calculate_g = lambda p_, q_, h_: pow(h_, (p_ - 1) // q_, p_)
+        h = randint(2, p - 2)
+        g = calculate_g(p, q, h)
+
+        while g == 1:
+            h = randint(2, p - 2)
+            g = calculate_g(p, q, h)
         return g
 
     def _gen_X(self):
-        return randint(0, self._keys_container.q)
+        return randint(1, self.keys_container.q - 1)
 
     def _gen_Y(self):
         p, _, g, _ = self.keys_container.public_key
@@ -98,7 +105,7 @@ class DSAKeygen(DSABase):
 
     @staticmethod
     def binary_length_end(length: int) -> int:
-        end = 2 ** length
+        end = (2 ** length) - 1
         return end
 
     def generate_new_x_y(self):

@@ -1,4 +1,4 @@
-from src.dsa.dsa_keys_container import DSAKeysContainer
+from .dsa_keys_container import DSAKeysContainer
 
 
 class DSABase:

@@ -1,10 +1,10 @@
 from itertools import count
 from random import randint
 
-from sympy import randprime, isprime, n_order
+from sympy import randprime, isprime
 
-from src.dsa.dsa_base import DSABase
-from src.dsa.dsa_keys_container import DSAKeysContainer
+from .dsa_base import DSABase
+from .dsa_keys_container import DSAKeysContainer
 
 
 class DSAKeygen(DSABase):

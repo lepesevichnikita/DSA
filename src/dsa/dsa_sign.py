@@ -2,6 +2,8 @@ from random import randint
 
 from sympy import mod_inverse
 
+from .dsa_public_key import DSAPublicKey
+
 
 class DSASign:
     def __init__(self, r: int, s: int, hash_algorithm: str):
@@ -37,9 +39,9 @@ class DSASign:
 
     s = property(_get_s, _set_s)
 
-    def is_correct(self, public_key: list, hashed_data: int) -> bool:
+    def is_correct(self, public_key: DSAPublicKey, hashed_data: int) -> bool:
         result = False
-        p, q, g, y = public_key
+        p, q, g, y = public_key.to_list()
         if self._r in range(q) and self._s in range(q):
             w = mod_inverse(self._s, q)
             u1 = (hashed_data * w) % q
@@ -54,10 +56,10 @@ class DSASign:
             file.write(" ".join([hex(value) for value in self.as_list]))
 
 
-def sign_data(public_key: list, private_key: int,
+def sign_data(public_key: DSAPublicKey, private_key: int,
               hashed_data: int,
               hash_algorithm: str) -> DSASign:
-    p, q, g, y = public_key
+    p, q, g, y = public_key.to_list()
     calc_r = lambda p_, q_, g_, k_: pow(g_, k_, p_) % q_
     calc_s = lambda q_, x_, r_, h_, k_mod_inverse_q_: (k_mod_inverse_q_ * ((h_ + x_ * r_) % q_)) % q
     k = randint(0, q-1)

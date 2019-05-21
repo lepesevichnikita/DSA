@@ -65,6 +65,13 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
                 }
+
+                Button {
+                    text: qsTr("Схема Шнора")
+                    onClicked: stackView.push(schnorrScheme)
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.fillWidth: true
+                }
             }
         }
 
@@ -87,6 +94,14 @@ ApplicationWindow {
             SignCheck {
                 anchors.margins: margins
             }
+        }
+
+        Component {
+            id: schnorrScheme
+            SchnorrScheme {
+                anchors.margins: margins
+            }
+
         }
     }
 

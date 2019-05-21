@@ -8,7 +8,7 @@ class DSASigner(DSAHasher):
     def __init__(self, sign: DSASign = None,
                  sign_name="",
                  keys_container=DSAKeysContainer()):
-        super().__init__(keys_container)
+        super().__init__()
         self._sign = sign
         self._sign_name = sign_name
 

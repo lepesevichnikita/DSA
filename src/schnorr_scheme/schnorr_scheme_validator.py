@@ -1,6 +1,6 @@
-from src.dsa.dsa_keys_container import DSAKeysContainer
-
 from random import randint
+
+from src.dsa.dsa_keys_container import DSAKeysContainer
 
 
 class SchnorrSchemeValidator:
@@ -38,16 +38,14 @@ class SchnorrSchemeValidator:
     def r(self, r: int):
         self._r = r
 
-    def init(self, x: int) :
-        self._x = x
+    def gen_e(self):
         self._e = randint(0, (2**self._complexity)-1)
-
 
     @property
     def s(self) -> int:
         return self._s
 
-    @s.settes
+    @s.setter
     def s(self, s: int):
         self._s = s
 

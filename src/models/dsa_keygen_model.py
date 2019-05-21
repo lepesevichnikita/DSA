@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot, QThread
+from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject, QThread
 
-from src.dsa import DSAKeygen
+from src.dsa import DSAKeygen, DSAPublicKey
 
 
 class KeygenThread(QThread):
@@ -72,33 +72,34 @@ class DSAKeygenModel(QObject):
         self._keygen.keys_container.keys = keys
         self.keysValueChanged.emit()
 
-    @pyqtProperty(list, notify=keysValueChanged)
-    def public_key(self) -> list:
-        return self._keygen.keys_container.public_key
+    @pyqtProperty(DSAPublicKey, notify=keysValueChanged)
+    def public_key(self) -> DSAPublicKey:
+        return self._keygen.public_key
 
     @pyqtProperty(int, notify=keysValueChanged)
     def private_key(self) -> int:
-        return self._keygen.keys_container.private_key
+        return self._keygen.private_key
+
 
     @pyqtProperty(str, notify=keysValueChanged)
     def p(self):
-        return hex(self._keygen.keys_container.p)
+        return hex(self._keygen.public_key.p)
 
     @pyqtProperty(str, notify=keysValueChanged)
     def q(self):
-        return hex(self._keygen.keys_container.q)
+        return hex(self._keygen.public_key.q)
 
     @pyqtProperty(str, notify=keysValueChanged)
     def g(self):
-        return hex(self._keygen.keys_container.g)
+        return hex(self._keygen.public_key.g)
 
     @pyqtProperty(str, notify=keysValueChanged)
     def y(self):
-        return hex(self._keygen.keys_container.y)
+        return hex(self._keygen.public_key.y)
 
     @pyqtProperty(str, notify=keysValueChanged)
-    def x(self):
-        return hex(self._keygen.keys_container.x)
+    def private_key(self):
+        return hex(self._keygen.private_key)
 
     @pyqtProperty(int, notify=qLengthChanged)
     def q_length(self) -> int:

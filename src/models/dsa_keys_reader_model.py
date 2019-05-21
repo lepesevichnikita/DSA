@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
+from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject
 
 from src.dsa import DSAKeysReader
 
@@ -13,6 +13,8 @@ class DSAKeysReaderModel(QObject):
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self._keys_reader = DSAKeysReader()
+        self.publicKeyPathChanged.connect(self.read_public_key)
+        self.privateKeyPathChanged.connect(self.read_private_key)
         self.publicKeyChanged.connect(self.keysChanged)
         self.privateKeyChanged.connect(self.keysChanged)
 
@@ -22,23 +24,23 @@ class DSAKeysReaderModel(QObject):
 
     @pyqtProperty(str, notify=publicKeyChanged)
     def q(self) -> str:
-        return hex(self._keys_reader.keys_container.q)
+        return hex(self._keys_reader.public_key.q)
 
     @pyqtProperty(str, notify=publicKeyChanged)
     def g(self) -> str:
-        return hex(self._keys_reader.keys_container.g)
+        return hex(self._keys_reader.public_key.g)
 
     @pyqtProperty(str, notify=publicKeyChanged)
     def p(self) -> str:
-        return hex(self._keys_reader.keys_container.p)
+        return hex(self._keys_reader.public_key.p)
 
     @pyqtProperty(str, notify=publicKeyChanged)
     def y(self) -> str:
-        return hex(self._keys_reader.keys_container.y)
+        return hex(self._keys_reader.public_key.y)
 
     @pyqtProperty(str, notify=privateKeyChanged)
     def private_key(self) -> str:
-        return hex(self._keys_reader.keys_container.private_key)
+        return hex(self._keys_reader.private_key)
 
     @pyqtProperty(list, notify=keysChanged)
     def keys(self) -> list:
@@ -85,3 +87,11 @@ class DSAKeysReaderModel(QObject):
             self.privateKeyChanged.emit()
         except Exception as e:
             print(e)
+
+    @pyqtProperty(bool, notify=publicKeyChanged)
+    def has_public_keys(self) -> bool:
+        return self._keys_reader.has_public_key
+
+    @pyqtProperty(bool, notify=privateKeyChanged)
+    def has_private_key(self) -> bool:
+        return self._keys_reader.has_private_key

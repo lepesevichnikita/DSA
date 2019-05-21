@@ -1,4 +1,5 @@
 from .dsa_keys_container import DSAKeysContainer
+from .dsa_public_key import DSAPublicKey
 
 
 class DSABase:
@@ -11,19 +12,74 @@ class DSABase:
                                              'equal '
     PRIVATE_KEY_IS_NONE_MESSAGE = 'Private key should be passed'
 
-    def __init__(self, keys_container:DSAKeysContainer):
-        self._keys_container = keys_container
+    def __init__(self):
+        self._keys_container = DSAKeysContainer()
 
-    def _get_keys_container(self) -> DSAKeysContainer:
+    @property
+    def keys_container(self) -> DSAKeysContainer:
         return self._keys_container
 
-    def _set_keys_container(self, keys_container: DSAKeysContainer):
+    @keys_container.setter
+    def keys_container(self, keys_container: DSAKeysContainer):
         self._keys_container = keys_container
-
-    keys_container = property(_get_keys_container, _set_keys_container)
 
     @property
     def has_keys_container(self) -> bool:
         return self._keys_container is not None
 
+    @property
+    def has_private_key(self) -> bool:
+        result = False
+        if self.has_keys_container:
+            result = self._keys_container.has_private_key
+        return result
 
+    @property
+    def has_public_key(self) -> bool:
+        result = False
+        if self.has_keys_container:
+            result = self._keys_container.has_public_key
+        return result
+
+    @property
+    def public_key(self) -> DSAPublicKey:
+        result = DSAPublicKey()
+        if self.has_keys_container:
+            result = self._keys_container.public_key
+        return result
+
+    @public_key.setter
+    def public_key(self, public_key: DSAPublicKey):
+        if self.has_keys_container:
+            self._keys_container.public_key = public_key
+
+    @property
+    def private_key(self) -> int:
+        result = 0
+        if self.has_keys_container and self.has_private_key:
+            result = self._keys_container.private_key
+        return result
+
+    @private_key.setter
+    def private_key(self, private_key: int):
+        if self.has_keys_container:
+            self._keys_container.private_key = private_key
+
+    @property
+    def keys(self) -> list:
+        result = []
+        if self.has_keys_container and self.has_keys:
+            result = self.keys_container.keys
+        return result
+
+    @keys.setter
+    def keys(self, keys: list):
+        if self.has_keys_container:
+            self.keys_container.keys = keys
+
+    @property
+    def has_keys(self) -> bool:
+        result = False
+        if self.has_keys_container:
+            result = self._keys_container.has_keys
+        return result

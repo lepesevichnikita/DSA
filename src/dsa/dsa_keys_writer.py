@@ -1,14 +1,12 @@
 from .dsa_base import DSABase
-from .dsa_keys_container import DSAKeysContainer
 
 
 class DSAKeysWriter(DSABase):
 
     def __init__(self,
                  directory_path: str = None,
-                 keys_name: str = None,
-                 keys_container: DSAKeysContainer = DSAKeysContainer()):
-        super().__init__(keys_container)
+                 keys_name: str = None):
+        super().__init__()
         self.directory_path = directory_path
         self._keys_name = keys_name
 
@@ -38,27 +36,11 @@ class DSAKeysWriter(DSABase):
 
     @property
     def public_key_path(self) -> str:
-        return self._directory_path + self.keys_name + DSAKeysWriter.PUBLIC_KEY_EXTENSION
+        return self._directory_path + self.keys_name + DSABase.PUBLIC_KEY_EXTENSION
 
     @property
     def private_key_path(self) -> str:
-        return self._directory_path + self.keys_name + DSAKeysWriter.PRIVATE_KEY_EXTENSION
-
-    @property
-    def public_key(self) -> list:
-        return self.keys_container.public_key
-
-    @public_key.setter
-    def public_key(self, public_key: list):
-        self.keys_container.public_key = public_key
-
-    @property
-    def private_key(self) -> int:
-        return self.keys_container.private_key
-
-    @private_key.setter
-    def private_key(self, private_key):
-        self.keys_container.private_key = private_key
+        return self._directory_path + self.keys_name + DSABase.PRIVATE_KEY_EXTENSION
 
     def is_correct_keys_destination(self) -> bool:
         return self.has_directory_path & self.has_keys_name \
@@ -66,13 +48,12 @@ class DSAKeysWriter(DSABase):
 
     def write_public_key(self):
         if self.is_correct_keys_destination() \
-                & self.keys_container.has_public_key:
+                & self.has_public_key:
             self._write_all_values_from_public_key()
         return self
 
     def write_private_key(self):
-        if self.is_correct_keys_destination() \
-                & self.keys_container.has_private_key:
+        if self.is_correct_keys_destination() and self.has_private_key:
             with open(self.private_key_path, "wt") as file:
                 file.write(hex(self.private_key))
         return self
@@ -87,4 +68,8 @@ class DSAKeysWriter(DSABase):
 
     def _write_all_values_from_public_key(self):
         with open(self.public_key_path, "wt") as file:
-            file.write(" ".join([hex(value) for value in self.public_key]))
+            public_key_as_array_of_int = self.public_key.to_list()
+            public_key_as_array_of_hex = [hex(value) for value in
+                                          public_key_as_array_of_int]
+            public_key_as_string = " ".join(public_key_as_array_of_hex)
+            file.write(public_key_as_string)

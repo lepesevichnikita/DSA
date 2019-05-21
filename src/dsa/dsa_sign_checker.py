@@ -1,12 +1,10 @@
 from .dsa_hasher import DSAHasher
-from .dsa_keys_container import DSAKeysContainer
 from .dsa_sign import DSASign, read_sign_from_file
 
 
 class DSASignChecker(DSAHasher):
-    def __init__(self, sign: DSASign = None, sign_path: str = None,
-                 keys_container: DSAKeysContainer = DSAKeysContainer()):
-        super().__init__(keys_container)
+    def __init__(self, sign: DSASign = None, sign_path: str = None):
+        super().__init__()
         self._sign = sign
         self._sign_path = sign_path
 
@@ -42,6 +40,6 @@ class DSASignChecker(DSAHasher):
     def is_sign_correct(self) -> bool:
         result = False
         if self.is_available_for_checking:
-            result = self._sign.is_correct(self.keys_container.public_key,
+            result = self._sign.is_correct(self.public_key,
                                            self.hashed_data)
         return result

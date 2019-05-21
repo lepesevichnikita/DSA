@@ -1,7 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.3
-import QtQuick.Dialogs 1.3
+import Qt.labs.platform 1.1
 
 import dsa 1.0
 
@@ -29,45 +29,26 @@ Page {
         }
     }
 
-    FileDialog {
+    FolderDialog {
         id: saveDialog
         title: qsTr("Выберите каталог для сохранения ключей")
         visible: false
-        selectFolder: true
-        selectMultiple: false
+        options: FolderDialog.ShowDirsOnly
         onAccepted: {
-            print(folder)
-            keysWriter.directory_path = folder.
+            keysWriter.directory_path = currentFolder.
                                         toString().
                                         replace("file://", "")
-            keysWriter.write_keys()
         }
     }
 
-    FileDialog {
+    PublicKeyOpenDialog {
         id: openPublicKeyDialog
-        title: qsTr("Выберите публичный ключ")
-        visible: false
-        selectFolder: false
-        selectMultiple: false
-        onAccepted: {
-            var path = fileUrl.toString().replace("file://", "")
-            keysReader.public_key_path = path
-            keysReader.read_public_key()
-        }
+        onPathChanged: keysReader.public_key_path = path
     }
 
-    FileDialog {
+    PrivateKeyOpenDialog {
         id: openPrivateKeyDialog
-        title: qsTr("Выберите закрытый ключ")
-        visible: false
-        selectFolder: false
-        selectMultiple: false
-        onAccepted: {
-            var path = fileUrl.toString().replace("file://", "")
-            keysReader.private_key_path = path
-            keysReader.read_private_key()
-        }
+        onPathChanged: keysReader.private_key_path = path
     }
 
     GridLayout {
@@ -200,7 +181,7 @@ Page {
         TextField {
             Layout.fillWidth: true
             Layout.columnSpan: 3
-            text: keygen.x
+            text: keygen.private_key
             readOnly: true
             selectByMouse: true
         }

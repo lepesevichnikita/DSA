@@ -1,6 +1,6 @@
-from src.dsa import DSAKeysWriter
+from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSlot, pyqtSignal
+from src.dsa import DSAKeysWriter
 
 
 class DSAKeysWriterModel(QObject):
@@ -12,6 +12,7 @@ class DSAKeysWriterModel(QObject):
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
         self._keys_writer = DSAKeysWriter()
+        self.directoryPathChanged.connect(self.write_keys)
 
     @pyqtProperty(str, notify=keysNameChanged)
     def keys_name(self) -> str:
@@ -24,12 +25,12 @@ class DSAKeysWriterModel(QObject):
 
     @pyqtProperty(list, notify=keysChanged)
     def keys(self) -> list:
-        return self._keys_writer.keys_container.keys
+        return self._keys_writer.keys
 
     @keys.setter
     def keys(self, keys: list):
         try:
-            self._keys_writer.keys_container.keys = keys
+            self._keys_writer.keys = keys
         except Exception as e:
             print(e)
         finally:

@@ -18,30 +18,14 @@ Page {
         keys: keysReader.keys
     }
 
-    FileDialog {
+    PublicKeyOpenDialog {
         id: openPublicKeyDialog
-        title: qsTr("Выберите публичный ключ")
-        visible: false
-        selectFolder: false
-        selectMultiple: false
-        onAccepted: {
-            var path = fileUrl.toString().replace("file://", "")
-            keysReader.public_key_path = path
-            keysReader.read_public_key()
-        }
+        onPathChanged: keysReader.public_key_path = path
     }
 
-    FileDialog {
+    PrivateKeyOpenDialog {
         id: openPrivateKeyDialog
-        title: qsTr("Выберите закрытый ключ")
-        visible: false
-        selectFolder: false
-        selectMultiple: false
-        onAccepted: {
-            var path = fileUrl.toString().replace("file://", "")
-            keysReader.private_key_path = path
-            keysReader.read_private_key()
-        }
+        onPathChanged: keysReader.private_key_path = path
     }
 
     FileDialog {

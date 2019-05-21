@@ -1,10 +1,9 @@
 from itertools import count
 from random import randint
 
-from sympy import randprime, isprime
+from sympy import isprime, randprime
 
 from .dsa_base import DSABase
-from .dsa_keys_container import DSAKeysContainer
 
 
 class DSAKeygen(DSABase):
@@ -12,16 +11,16 @@ class DSAKeygen(DSABase):
     DEFAULT_P_LENGTH = 3072
 
     def __init__(self, q_length=DEFAULT_Q_LENGTH, p_length=DEFAULT_P_LENGTH):
-        super().__init__(DSAKeysContainer())
+        super().__init__()
         self._q_length = q_length
         self._p_length = p_length
 
     def generate_new_keys(self) -> list:
-        self.keys_container.q = self._gen_Q()
-        self.keys_container.p = self._gen_P()
-        self.keys_container.g = self._gen_G()
-        self.keys_container.x = self._gen_X()
-        self.keys_container.y = self._gen_Y()
+        self.public_key.q = self._gen_Q()
+        self.public_key.p = self._gen_P()
+        self.public_key.g = self._gen_G()
+        self.private_key = self._gen_X()
+        self.public_key.y = self._gen_Y()
         return self.keys_container.keys
 
     @property
@@ -65,7 +64,7 @@ class DSAKeygen(DSABase):
         return q
 
     def _gen_P(self) -> int:
-        q = self._keys_container.q
+        q = self.public_key.q
         round_to_next_divider = q - self._p_range_start % q
         p_range_start = self._p_range_start if round_to_next_divider == 0 \
             else self._p_range_start + round_to_next_divider
@@ -79,7 +78,7 @@ class DSAKeygen(DSABase):
         return p
 
     def _gen_G(self):
-        p, q, *_ = self.keys_container.public_key
+        p, q, *_ = self.public_key.to_list()
         calculate_g = lambda p_, q_, h_: pow(h_, (p_ - 1) // q_, p_)
         h = randint(2, p - 2)
         g = calculate_g(p, q, h)
@@ -90,11 +89,11 @@ class DSAKeygen(DSABase):
         return g
 
     def _gen_X(self):
-        return randint(1, self.keys_container.q - 1)
+        return randint(1, self.public_key.q - 1)
 
     def _gen_Y(self):
-        p, _, g, _ = self.keys_container.public_key
-        x = self.keys_container.private_key
+        p, _, g, _ = self.public_key.to_list()
+        x = self.private_key
         y = pow(g, x, p)
         return y
 
@@ -109,5 +108,5 @@ class DSAKeygen(DSABase):
         return end
 
     def generate_new_x_y(self):
-        self.keys_container.x = self._gen_X()
-        self.keys_container.y = self._gen_Y()
+        self.private_key = self._gen_X()
+        self.public_key.y = self._gen_Y()

@@ -1,12 +1,11 @@
 from .dsa_base import DSABase
-from .dsa_keys_container import DSAKeysContainer
+from .dsa_public_key import DSAPublicKey
 
 
 class DSAKeysReader(DSABase):
-    def __init__(self, keys_container: DSAKeysContainer = DSAKeysContainer(),
-                 public_key_path: str = None,
+    def __init__(self, public_key_path: str = None,
                  private_key_path: str = None):
-        super().__init__(keys_container)
+        super().__init__()
         if public_key_path is not None:
             self._public_key_path = public_key_path
         if private_key_path is not None:
@@ -38,9 +37,11 @@ class DSAKeysReader(DSABase):
 
     def read_public_key(self):
         with open(self._public_key_path, 'r') as file:
-            numbers = file.read().split(" ")
-            self.keys_container.public_key = [int(value, 16) for value in
-                                              numbers]
+            public_key_as_array_of_hex = file.read().split(" ")
+            public_key_as_array_of_int = [int(value, 16) for value in
+                                          public_key_as_array_of_hex]
+            self.keys_container.public_key = DSAPublicKey(
+                *public_key_as_array_of_int)
         return self
 
     def read_private_key(self):

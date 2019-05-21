@@ -3,16 +3,14 @@ from math import log
 from os.path import dirname
 
 from .dsa_base import DSABase
-from .dsa_keys_container import DSAKeysContainer
 
 
 class DSAHasher(DSABase):
     DEFAULT_HASH_ALGORITHM = 'sha256'
 
-    def __init__(self, keys_container=DSAKeysContainer(),
-                 hash_algorithm: str = DEFAULT_HASH_ALGORITHM,
+    def __init__(self, hash_algorithm: str = DEFAULT_HASH_ALGORITHM,
                  file_path: str = ""):
-        super().__init__(keys_container)
+        super().__init__()
         self._hash_algorithm = hash_algorithm
         self._hash = hashlib.new(hash_algorithm)
         self._file_path = file_path
@@ -39,7 +37,7 @@ class DSAHasher(DSABase):
     def is_selected_hash_algorithm_correct(self) -> bool:
         result = False
         if self._keys_container.has_public_key:
-            q = self._keys_container.q
+            q = self.public_key.q
             binary_length_of_q = int(log(2, q) + 1)
             result = binary_length_of_q == self.hash_digest_size
         return result

@@ -1,13 +1,12 @@
-from src.dsa.dsa_keys_container import DSAKeysContainer
-
 from random import randint
+
+from src.dsa.dsa_keys_container import DSAKeysContainer
 
 
 class SchnorrSchemeClient:
 
     def __init__(self):
         self._keys_container = DSAKeysContainer()
-        self._keys_container.keys = keys
         self._x = 0
         self._s = 0
         self._r = 0

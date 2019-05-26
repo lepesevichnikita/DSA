@@ -1,13 +1,11 @@
 from .dsa_base import DSABase
 from .dsa_hasher import DSAHasher
-from .dsa_keys_container import DSAKeysContainer
 from .dsa_sign import DSASign, sign_data
 
 
 class DSASigner(DSAHasher):
     def __init__(self, sign: DSASign = None,
-                 sign_name="",
-                 keys_container=DSAKeysContainer()):
+                 sign_name=""):
         super().__init__()
         self._sign = sign
         self._sign_name = sign_name
@@ -53,5 +51,14 @@ class DSASigner(DSAHasher):
         return self.hash_algorithm is not None and len(self.hash_algorithm) > 0
 
     @property
+    def has_keys_container_wih_keys(self) -> bool:
+        return self.has_keys_container and self.keys_container.has_keys
+
+    @property
+    def has_hashed_data_with_hash_algorithm(self) -> bool:
+        return self.has_hashed_data and self.has_hash_algorithm
+
+    @property
     def is_available_for_signing(self) -> bool:
-        return self.has_keys_container & self.keys_container.has_keys & self.has_hashed_data & self.has_hash_algorithm
+        return self.has_keys_container_wih_keys \
+               and self.has_hashed_data_with_hash_algorithm

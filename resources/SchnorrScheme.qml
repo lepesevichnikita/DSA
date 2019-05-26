@@ -8,92 +8,101 @@ import dsa 1.0
 
 Page {
     id: root
+
     DSAKeysReader {
         id: keysReader
     }
 
-    FileDialog {
+    SchnorrSchemeClient {
+        id: schnorrClient
+        keys: keysReader.keys
+        e: schnorrValidator.e
+    }
+
+    SchnorrSchemeValidator {
+        id: schnorrValidator
+        keys: keysReader.keys
+        s: schnorrClient.s
+        x: schnorrClient.x
+    }
+
+    PublicKeyOpenDialog {
         id: openPublicKeyDialog
-        fileMode: FileDialog.OpenFile
-        options: FileDialog.ReadOnly
-        title: qsTr("Выберите открытый ключ")
-        onAccepted: {
-            var path = file.toString().replace("file://", "")
-            print(path)
-            keysReader.public_key_path = path
-        }
+        onPathChanged: keysReader.public_key_path = path
     }
 
-    FileDialog {
+    PrivateKeyOpenDialog {
         id: openPrivateKeyDialog
-        fileMode: FileDialog.OpenFile
-        options: FileDialog.ReadOnly
-        title: qsTr("Выберите закрытый ключ")
-        onAccepted: {
-            var path = file.toString().replace("file://", "")
-            print(path)
-            keysReader.private_key_path = path
+        onPathChanged: keysReader.private_key_path = path
+    }
+
+
+    header: GridLayout {
+        Layout.fillWidth: true
+        columns: 3
+
+        Label {
+            text: qsTr("Публичный ключ:")
+        }
+
+        TextField {
+            id: publicKeyStatus
+            Layout.fillWidth: true
+            readOnly: true
+            placeholderText: qsTr("Открытый ключ")
+            text: keysReader.public_key_path
+        }
+
+        Button {
+            text: qsTr("Выбрать")
+            onClicked: openPublicKeyDialog.open()
+        }
+
+        Label {
+            text: qsTr("Закрытый ключ")
+        }
+
+        TextField {
+            id: privateKeyStatus
+            Layout.fillWidth: true
+            readOnly: true
+            placeholderText: qsTr("Закрытый ключ")
+            text: keysReader.private_key_path
+        }
+        Button {
+            text: qsTr("Выбрать")
+            onClicked: openPrivateKeyDialog.open()
         }
     }
 
-    GridLayout {
+    ScrollView {
         anchors.fill: parent
-        columns: 2
 
-        GridLayout {
-            columns: 3
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            Button {
-                text: qsTr("Выбрать публичный ключ")
-                onClicked: openPublicKeyDialog.open()
-            }
-            Label {
-                text: qsTr("Публичный ключ:")
-            }
+        Column {
+            anchors.fill: parent
+            StackLayout {
+                id: schnor
+                currentIndex: bar.currentIndex
+                anchors.fill: parent
 
-            Label {
-                id: publicKeyStatus
-                text: qsTr("Не выбран")
-            }
-
-            Button {
-                text: qsTr("Выбрать закрытый ключ")
-                onClicked: openPrivateKeyDialog.open()
-            }
-            Label {
-                text: qsTr("Закрытый ключ:")
-            }
-
-            Label {
-                id: privateKeyStatus
-                text: qsTr("Не выбран")
-            }
-            states: [
-                State {
-                    name: "publicKeySelected"
-                    when: keysReader.has_public_key
-                    PropertyChanges {
-                        target: publicKeyStatus
-                        text: qsTr("Выбран")
-                    }
-                },
-
-                State {
-                    name: "privateKeySelected"
-                    when: keysReader.has_private_key
-                    PropertyChanges {
-                        target: privateKeyStatus
-                        text: qsTr("Выбран")
-                    }
+                SchnorrClient {
+                    client: schnorrClient
                 }
-            ]
-        }
-        GridLayout {
-            columns: 2
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+
+                SchnorrValidator {
+                    validator: schnorrValidator
+                }
+            }
         }
     }
+    footer: TabBar {
+        id: bar
+        Repeater {
+            model: ["Клиент", "Валидатор"]
+            delegate: TabButton {
+                text: qsTr(modelData)
+            }
+        }
 
+    }
 }

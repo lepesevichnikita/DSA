@@ -36,11 +36,13 @@ class DSAKeysWriter(DSABase):
 
     @property
     def public_key_path(self) -> str:
-        return self._directory_path + self.keys_name + DSABase.PUBLIC_KEY_EXTENSION
+        return "%s %s %s" % (
+            self._directory_path, self.keys_name, DSABase.PUBLIC_KEY_EXTENSION)
 
     @property
     def private_key_path(self) -> str:
-        return self._directory_path + self.keys_name + DSABase.PRIVATE_KEY_EXTENSION
+        return "%s %s %s" % (
+            self._directory_path, self.keys_name, DSABase.PRIVATE_KEY_EXTENSION)
 
     def is_correct_keys_destination(self) -> bool:
         return self.has_directory_path & self.has_keys_name \

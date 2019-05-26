@@ -52,25 +52,35 @@ ApplicationWindow {
                     onClicked: stackView.push(keygenPage)
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
                 Button {
                     text: qsTr("Подписать файл")
                     onClicked: stackView.push(fileSignPage)
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
                 Button {
                     text: qsTr("Проверить подпись")
                     onClicked: stackView.push(signCheckingPage)
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
-
                 Button {
-                    text: qsTr("Схема Шнора")
+                    text: qsTr("Сгенерировать ключи по схеме Шнора")
+                    onClicked: stackView.push(schnorrSchemeKeygen)
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+                Button {
+                    text: qsTr("Нулевая передача знаний по схеме Шнора")
                     onClicked: stackView.push(schnorrScheme)
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                     Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
             }
         }
@@ -99,6 +109,13 @@ ApplicationWindow {
         Component {
             id: schnorrScheme
             SchnorrScheme {
+                anchors.margins: margins
+            }
+        }
+
+        Component {
+            id: schnorrSchemeKeygen
+            SchnorrKeygen {
                 anchors.margins: margins
             }
 

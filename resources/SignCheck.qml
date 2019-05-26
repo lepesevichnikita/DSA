@@ -16,7 +16,6 @@ Page {
     DSASignChecker {
         id: checker
         keys: keysReader.keys
-        onSignStatusChanged: print(is_sign_correct)
     }
 
     PublicKeyOpenDialog {

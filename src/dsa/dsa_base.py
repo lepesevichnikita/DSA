@@ -68,7 +68,7 @@ class DSABase:
     @property
     def keys(self) -> list:
         result = []
-        if self.has_keys_container and self.has_keys:
+        if self.has_keys_container:
             result = self.keys_container.keys
         return result
 

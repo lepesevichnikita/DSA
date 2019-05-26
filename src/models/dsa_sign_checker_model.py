@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
+from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject
 
 from src.dsa.dsa_sign_checker import DSASignChecker
 
@@ -37,11 +37,11 @@ class DSASignCheckerModel(QObject):
 
     @pyqtProperty(list, notify=keysChanged)
     def keys(self) -> list:
-        return self._sign_checker.keys_container.keys
+        return self._sign_checker.keys
 
     @keys.setter
     def keys(self, keys: list):
-        self._sign_checker.keys_container.keys = keys
+        self._sign_checker.keys = keys
         self.keysChanged.emit()
 
     @pyqtProperty(str, notify=signPathChanged)

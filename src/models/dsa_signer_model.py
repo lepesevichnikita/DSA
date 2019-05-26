@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal, pyqtProperty
+from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject
 
 from src.dsa import DSASigner
 
@@ -33,7 +33,7 @@ class DSASignerModel(QObject):
 
     @keys.setter
     def keys(self, keys: list):
-        self._signer.keys_container.keys = keys
+        self._signer.keys = keys
         self.keysChanged.emit()
 
     @pyqtProperty(str, notify=filePathChanged)

@@ -1,55 +1,52 @@
 from random import randint
 
-from src.dsa.dsa_keys_container import DSAKeysContainer
+from src.dsa import DSABase
 
 
-class SchnorrSchemeClient:
+class SchnorrSchemeClient(DSABase):
 
     def __init__(self):
-        self._keys_container = DSAKeysContainer()
+        super().__init__()
         self._x = 0
         self._s = 0
         self._r = 0
         self._e = 0
 
     @property
-    def keys(self) -> list:
-        return self._keys_container.keys
-
-    @keys.setter
-    def keys(self, keys: list):
-        self._keys_container.keys = keys
-
-    @property
     def x(self) -> int:
         return self._x
 
     def gen_x(self):
-        p, q, g, _ = self._keys_container.public_key
-        if self._r == 0:
-            self.gen_r()
-        self._x = pow(g, self._r, p)
+        pk = self.public_key
+        if pk.has_p and pk.has_q and pk.has_g:
+            p, q, g, _ = self.public_key.to_list()
+            if self._r == 0:
+                self.gen_r()
+            self._x = pow(g, self._r, p)
 
     @property
     def r(self) -> int:
         return self._r
 
     def gen_r(self):
-        self._r = randint(0, self._keys_container.q - 1)
+        if self.public_key.has_q:
+            self._r = randint(0, self.public_key.q - 1)
 
     @property
-    def s(self) -> list:
+    def s(self) -> int:
         return self._s
 
     def gen_s(self):
-        p, q, g, _ = self._keys_container.public_key
-        w = self._keys_container.private_key
-        self._s = (self._r + w * self._e) % p
+        pk = self.public_key
+        if pk.has_p and pk.has_q and pk.has_g:
+            p, q, g, _ = self.public_key.to_list()
+            w = self._keys_container.private_key
+            self._s = (self._r + w * self._e) % q
 
     @property
-    def e(self) -> list:
+    def e(self) -> int:
         return self._e
 
-    @x.setter
-    def e(self, e: list):
+    @e.setter
+    def e(self, e: int):
         self._e = e

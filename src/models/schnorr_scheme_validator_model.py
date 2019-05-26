@@ -4,12 +4,12 @@ from src.schnorr_scheme import SchnorrSchemeValidator
 
 
 class SchnorrSchemeValidatorModel(QObject):
-    complexityChanged = pyqtSignal(int)
-    sChanged = pyqtSignal(int)
-    eChanged = pyqtSignal(int)
-    isValidChanged = pyqtSignal(bool)
-    xChanged = pyqtSignal(int)
-    publicKeyChanged = pyqtSignal(list)
+    complexityChanged = pyqtSignal()
+    sChanged = pyqtSignal()
+    eChanged = pyqtSignal()
+    isValidChanged = pyqtSignal()
+    xChanged = pyqtSignal()
+    publicKeyChanged = pyqtSignal()
 
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
@@ -19,56 +19,62 @@ class SchnorrSchemeValidatorModel(QObject):
         self.sChanged.connect(self.isValidChanged)
 
     @pyqtProperty(int, notify=complexityChanged)
-    def complexity(
-            self) -> int: return self._schnorr_scheme_validator.complexity
+    def complexity(self) -> int:
+        return self._schnorr_scheme_validator.complexity
 
     @complexity.setter
     def complexity(self, complexity: int):
         self._schnorr_scheme_validator.complexity = complexity
-        self.complexityChanged.emit(complexity)
+        self.complexityChanged.emit()
 
-    @pyqtProperty(int, notify=sChanged)
-    def s(self) -> int:
-        return self._schnorr_scheme_validator.s
+    @pyqtProperty(str, notify=sChanged)
+    def s(self) -> str:
+        return hex(self._schnorr_scheme_validator.s)
 
     @s.setter
-    def s(self, s: int):
-        self._schnorr_scheme_validator.s = s
-        self.sChanged.emit(s)
+    def s(self, s: str):
+        self._schnorr_scheme_validator.s = int(s, 16)
+        self.sChanged.emit()
 
-    @pyqtProperty(int, notify=eChanged)
-    def e(self) -> int:
-        return self._schnorr_scheme_validator.e
+    @pyqtProperty(str, notify=eChanged)
+    def e(self) -> str:
+        return hex(self._schnorr_scheme_validator.e)
 
-    @pyqtSlot(int)
-    def init(self, x: int):
-        self.x = x
+    @pyqtSlot()
+    def init(self, x: str):
+        self.x = int(x, 16)
+        self.gen_e()
+
+    @pyqtSlot()
+    def gen_e(self):
+        prev_e = self._schnorr_scheme_validator.e
         self._schnorr_scheme_validator.gen_e()
-        self.eChanged.emit(self.e)
+        if prev_e != self._schnorr_scheme_validator.e:
+            self.eChanged.emit()
 
-    @pyqtProperty(int, notify=xChanged)
-    def x(self) -> int:
-        return self._schnorr_scheme_validator.x
+    @pyqtProperty(str, notify=xChanged)
+    def x(self) -> str:
+        return hex(self._schnorr_scheme_validator.x)
 
     @x.setter
-    def x(self, x: int):
-        self._schnorr_scheme_validator.x = x
-        self.xChanged.emit(x)
+    def x(self, x: str):
+        self._schnorr_scheme_validator.x = int(x, 16)
+        self.xChanged.emit()
 
     @pyqtProperty(list, notify=publicKeyChanged)
-    def public_key(self) -> list:
-        return self._schnorr_scheme_validator.public_key
+    def keys(self) -> list:
+        return self._schnorr_scheme_validator.keys
 
-    @public_key.setter
-    def public_key(self, public_key: list) -> list:
-        self._schnorr_scheme_validator.public_key = public_key
-        self.publicKeyChanged.emit(public_key)
+    @keys.setter
+    def keys(self, keys: list):
+        self._schnorr_scheme_validator.keys = keys
+        self.publicKeyChanged.emit()
 
     @pyqtProperty(bool, notify=isValidChanged)
     def is_valid(self) -> bool:
         return self._schnorr_scheme_validator.is_valid
 
-    @pyqtSlot(int)
+    @pyqtSlot()
     def gen_e(self):
         self._schnorr_scheme_validator.gen_e()
-        self.eChanged.emit(self._schnorr_scheme_validator.e)
+        self.eChanged.emit()

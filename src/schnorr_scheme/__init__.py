@@ -1,2 +1,3 @@
 from .schnorr_scheme_client import SchnorrSchemeClient
+from .schnorr_scheme_keygen import SchnorrSchemeKeygen
 from .schnorr_scheme_validator import SchnorrSchemeValidator

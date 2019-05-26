@@ -10,7 +10,8 @@ from PyQt5.QtWidgets import QApplication
 import resources_rc
 from src.models import DSABaseModel, DSAKeygenModel, DSAKeysReaderModel, \
     DSAKeysWriterModel, DSASignCheckerModel, DSASignerModel, \
-    SchnorrSchemeClientModel, SchnorrSchemeValidatorModel
+    SchnorrSchemeClientModel, SchnorrSchemeKeygenModel, \
+    SchnorrSchemeValidatorModel
 
 MAIN_QML = QUrl("qrc:///main.qml")
 MODULES_IMPORT_PATH = "qrc:///modules"
@@ -35,6 +36,8 @@ def main():
     qmlRegisterType(SchnorrSchemeValidatorModel, "schnorr_scheme", 1, 0,
                     "SchnorrSchemeValidator")
     qmlRegisterType(DSABaseModel, "dsa", 1, 0, "DSABaseModel")
+    qmlRegisterType(SchnorrSchemeKeygenModel, "schnorr_scheme", 1, 0,
+                    "SchnorrSchemeKeygen")
 
     engine = QQmlApplicationEngine()
     engine.load(MAIN_QML)

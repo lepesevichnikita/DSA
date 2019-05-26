@@ -1,26 +1,25 @@
 from random import randint
 
-from src.dsa.dsa_keys_container import DSAKeysContainer
+from src.dsa import DSABase
 
 
-class SchnorrSchemeValidator:
+class SchnorrSchemeValidator(DSABase):
 
-    def __init__(self, public_key:list, complexity: int = 1):
-        self._complexity = complexity
+    def __init__(self):
+        super().__init__()
+        self._complexity = 3
         self._r = 0
         self._x = 0
         self._s = 0
         self._e = 0
-        self._keys_container = DSAKeysContainer()
-        self._keys_container.public_key = public_key
 
     @property
-    def public_key(self) -> list:
-        return self._keys_container.public_key
+    def x(self) -> int:
+        return self._x
 
-    @public_key.setter
-    def public_key(self, public_key: list):
-        self._keys_container.public_key = public_key
+    @x.setter
+    def x(self, x: int):
+        self._x = x
 
     @property
     def complexity(self) -> int:
@@ -39,7 +38,7 @@ class SchnorrSchemeValidator:
         self._r = r
 
     def gen_e(self):
-        self._e = randint(0, (2**self._complexity)-1)
+        self._e = randint(0, (2 ** self._complexity) - 1)
 
     @property
     def s(self) -> int:
@@ -55,5 +54,10 @@ class SchnorrSchemeValidator:
 
     @property
     def is_valid(self) -> bool:
-        p, _, g, y = self.public_key
-        return self._x == (pow(g, self._s, p) * pow(y, self._e, p))
+        result = False
+        pk = self.public_key
+        if pk.has_p and pk.has_g and pk.has_y:
+            p, _, g, y = pk.to_list()
+            test_x = pow(g, self._s, p) * pow(y, self._e, p) % p
+            result = self._x == test_x
+        return result

@@ -4,11 +4,11 @@ from src.schnorr_scheme import SchnorrSchemeClient
 
 
 class SchnorrSchemeClientModel(QObject):
-    rChanged = pyqtSignal(int)
-    xChanged = pyqtSignal(int)
-    sChanged = pyqtSignal(int)
-    eChanged = pyqtSignal(int)
-    keysChanged = pyqtSignal(list)
+    rChanged = pyqtSignal()
+    xChanged = pyqtSignal()
+    sChanged = pyqtSignal()
+    eChanged = pyqtSignal()
+    keysChanged = pyqtSignal()
 
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
@@ -16,40 +16,47 @@ class SchnorrSchemeClientModel(QObject):
         self.rChanged.connect(self.gen_x)
         self.eChanged.connect(self.gen_s)
 
-    @pyqtProperty(int, notify=rChanged)
-    def r(self) -> int:
-        return self._schnorr_scheme_client.r
+    @pyqtProperty(str, notify=rChanged)
+    def r(self) -> str:
+        return hex(self._schnorr_scheme_client.r)
 
-    @pyqtSlot(int)
+    @pyqtSlot()
     def gen_r(self):
+        prev_r = self._schnorr_scheme_client.r
         self._schnorr_scheme_client.gen_r()
+        if prev_r != self._schnorr_scheme_client.r:
+            self.rChanged.emit()
 
-    @pyqtProperty(int, notify=xChanged)
-    def x(self) -> int:
-        return self._schnorr_scheme_client.x
+    @pyqtProperty(str, notify=xChanged)
+    def x(self) -> str:
+        return hex(self._schnorr_scheme_client.x)
 
-    @pyqtSlot(int)
+    @pyqtSlot()
     def gen_x(self):
+        prev_x = self._schnorr_scheme_client.x
         self._schnorr_scheme_client.gen_x()
-        self.xChanged.emit(self.x)
+        if prev_x != self._schnorr_scheme_client.x:
+            self.xChanged.emit()
 
-    @pyqtProperty(int, notify=sChanged)
-    def s(self) -> int:
-        return self._schnorr_scheme_client.s
+    @pyqtProperty(str, notify=sChanged)
+    def s(self) -> str:
+        return hex(self._schnorr_scheme_client.s)
 
-    @pyqtSlot(int)
+    @pyqtSlot()
     def gen_s(self):
+        prev_s = self._schnorr_scheme_client.s
         self._schnorr_scheme_client.gen_s()
-        self.sChanged.emit(self.s)
+        if prev_s != self._schnorr_scheme_client.s:
+            self.sChanged.emit()
 
-    @pyqtProperty(int, notify=eChanged)
-    def e(self) -> int:
-        return self._schnorr_scheme_client.e
+    @pyqtProperty(str, notify=eChanged)
+    def e(self) -> str:
+        return hex(self._schnorr_scheme_client.e)
 
     @e.setter
-    def e(self, e: int):
-        self._schnorr_scheme_client.e = e
-        self.eChanged.emit(e)
+    def e(self, e: str):
+        self._schnorr_scheme_client.e = int(e, 16)
+        self.eChanged.emit()
 
     @pyqtProperty(list, notify=keysChanged)
     def keys(self) -> list:
@@ -58,4 +65,4 @@ class SchnorrSchemeClientModel(QObject):
     @keys.setter
     def keys(self, keys: list):
         self._schnorr_scheme_client.keys = keys
-        self.keysChanged.emit(keys)
+        self.keysChanged.emit()

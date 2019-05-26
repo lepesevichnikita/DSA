@@ -13,5 +13,8 @@
         <file alias="PrivateKeyOpenDialog.qml">
             resources/PrivateKeyOpenDialog.qml
         </file>
+        <file alias="SchnorrClient.qml">resources/SchnorrClient.qml</file>
+        <file alias="SchnorrValidator.qml">resources/SchnorrValidator.qml</file>
+        <file alias="SchnorrKeygen.qml">resources/SchnorrKeygen.qml</file>
     </qresource>
 </RCC>

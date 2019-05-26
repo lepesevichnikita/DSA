@@ -48,7 +48,7 @@ class DSASign:
             u2 = (self._r * w) % q
             v = ((pow(g, u1, p) * pow(y, u2, p)) % p) % q
             result = v == self._r
-        return v == self._r
+        return result
 
     def write_into_file(self, sign_path: str):
         with open(sign_path, "wt") as file:
@@ -60,9 +60,14 @@ def sign_data(public_key: DSAPublicKey, private_key: int,
               hashed_data: int,
               hash_algorithm: str) -> DSASign:
     p, q, g, y = public_key.to_list()
-    calc_r = lambda p_, q_, g_, k_: pow(g_, k_, p_) % q_
-    calc_s = lambda q_, x_, r_, h_, k_mod_inverse_q_: (k_mod_inverse_q_ * ((h_ + x_ * r_) % q_)) % q
-    k = randint(0, q-1)
+
+    def calc_r(p_, q_, g_, k_) -> int:
+        return pow(g_, k_, p_) % q_
+
+    def calc_s(q_, x_, r_, h_, k_mod_inverse_q_) -> int:
+        return (k_mod_inverse_q_ * ((h_ + x_ * r_) % q_)) % q
+
+    k = randint(0, q - 1)
     r = calc_r(p, q, g, k)
     k_mod_inverse_q = mod_inverse(k, q)
     s = calc_s(q, private_key, r, hashed_data, k_mod_inverse_q)

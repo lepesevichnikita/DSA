@@ -1,5 +1,6 @@
 from .dsa_public_key import DSAPublicKey
 
+
 class DSAKeysContainer:
     PRIVATE_KEY_IS_NONE_MESSAGE = 'Private key should be passed'
     HAS_ZERO_VALUES = 'Public key is too short'
@@ -35,7 +36,7 @@ class DSAKeysContainer:
         return self._x
 
     @private_key.setter
-    def private_key(self, private_key: int) -> int:
+    def private_key(self, private_key: int):
         self._validate_private_key(private_key)
         self._x = private_key
 

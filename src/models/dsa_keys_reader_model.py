@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QObject
 
-from src.dsa import DSAKeysReader
+from src.dsa import DSAKeysReader, DSAPublicKey
 
 
 class DSAKeysReaderModel(QObject):
@@ -18,8 +18,8 @@ class DSAKeysReaderModel(QObject):
         self.publicKeyChanged.connect(self.keysChanged)
         self.privateKeyChanged.connect(self.keysChanged)
 
-    @pyqtProperty(list, notify=publicKeyChanged)
-    def public_key(self) -> list:
+    @pyqtProperty(DSAPublicKey, notify=publicKeyChanged)
+    def public_key(self) -> DSAPublicKey:
         return self._keys_reader.keys_container.public_key
 
     @pyqtProperty(str, notify=publicKeyChanged)
@@ -89,7 +89,7 @@ class DSAKeysReaderModel(QObject):
             print(e)
 
     @pyqtProperty(bool, notify=publicKeyChanged)
-    def has_public_keys(self) -> bool:
+    def has_public_key(self) -> bool:
         return self._keys_reader.has_public_key
 
     @pyqtProperty(bool, notify=privateKeyChanged)

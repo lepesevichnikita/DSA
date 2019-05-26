@@ -26,7 +26,7 @@ class DSASignChecker(DSAHasher):
         self._sign_path = sign_path
 
     def read_sign(self):
-        self.sign = read_sign_from_file(self._sign_path)
+        self._sign = read_sign_from_file(self._sign_path)
 
     @property
     def has_sign(self):

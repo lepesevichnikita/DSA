@@ -80,7 +80,6 @@ class DSAKeygenModel(QObject):
     def private_key(self) -> int:
         return self._keygen.private_key
 
-
     @pyqtProperty(str, notify=keysValueChanged)
     def p(self):
         return hex(self._keygen.public_key.p)
@@ -130,4 +129,3 @@ class DSAKeygenModel(QObject):
         self._thread.keygen = self._keygen
         self._thread.method_name = 'generate_new_x_y'
         self._thread.start()
-

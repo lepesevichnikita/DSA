@@ -43,21 +43,21 @@ class DSAKeygen(DSABase):
         end = DSAKeygen.binary_length_end(self._p_length)
         return end
 
-    def _get_q_length(self) -> int:
+    @property
+    def q_length(self) -> int:
         return self._q_length
 
-    def _set_q_length(self, value: int):
+    @q_length.setter
+    def q_length(self, value: int):
         self._q_length = value
 
-    q_length = property(_get_q_length, _set_q_length)
-
-    def _get_p_length(self):
+    @property
+    def p_length(self):
         return self._p_length
 
-    def _set_p_length(self, value):
+    @p_length.setter
+    def p_length(self, value):
         self._p_length = value
-
-    p_length = property(_get_p_length, _set_p_length)
 
     def _gen_Q(self) -> int:
         q = randprime(self._q_range_start, self._q_range_end)
@@ -79,7 +79,10 @@ class DSAKeygen(DSABase):
 
     def _gen_G(self):
         p, q, *_ = self.public_key.to_list()
-        calculate_g = lambda p_, q_, h_: pow(h_, (p_ - 1) // q_, p_)
+
+        def calculate_g(p_, q_, h_):
+            return pow(h_, (p_ - 1) // q_, p_)
+
         h = randint(2, p - 2)
         g = calculate_g(p, q, h)
 

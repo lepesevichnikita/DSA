@@ -55,3 +55,23 @@ class DSAPublicKey:
     @property
     def has_zero_values(self) -> bool:
         return not self.is_full
+
+    @property
+    def has_q(self) -> bool:
+        result = self._q > 0
+        return result
+
+    @property
+    def has_p(self) -> bool:
+        result = self._p > 0
+        return result
+
+    @property
+    def has_g(self) -> bool:
+        result = self._g > 0
+        return result
+
+    @property
+    def has_y(self) -> bool:
+        result = self._y > 0
+        return result
